@@ -21,39 +21,39 @@ private:
 				}
 			}
 		}*/
-		//for (int row_first_matrix = 0; row_first_matrix < firstMatrixLines; row_first_matrix++)
-		//{
-		//	T* result_temp_row = resultMatrix[row_first_matrix];
+		for (int row_first_matrix = 0; row_first_matrix < firstMatrixLines; row_first_matrix++)
+		{
+			T* result_temp_row = resultMatrix[row_first_matrix];
 
-		//	for (int common_dimension_index = 0; common_dimension_index < firstMatrixColumns; common_dimension_index++)
-		//	{
-		//		T first_matrix_temp = firstMatrix[row_first_matrix][common_dimension_index];
-		//		T* second_matrix_temp_row = secondMatrix[common_dimension_index];
+			for (int common_dimension_index = 0; common_dimension_index < firstMatrixColumns; common_dimension_index++)
+			{
+				T first_matrix_temp = firstMatrix[row_first_matrix][common_dimension_index];
+				T* second_matrix_temp_row = secondMatrix[common_dimension_index];
 
-		//		for (int column_second_matrix = 0; column_second_matrix < secondMatrixColumns; column_second_matrix += 4)
-		//		{
-		//			// _mm256_set1_pd : Broadcast single-precision (32-bit) floating-point value a to all elements of dst.
-		//			const __m256d first_matrix_multiplier = _mm256_set1_pd(first_matrix_temp);
-		//			// load the result row to accumulate the multiplication result
-		//			__m256d prev_result = _mm256_load_pd(result_temp_row + column_second_matrix);
+				for (int column_second_matrix = 0; column_second_matrix < secondMatrixColumns; column_second_matrix += 4)
+				{
+					// _mm256_set1_pd : Broadcast single-precision (32-bit) floating-point value a to all elements of dst.
+					const __m256d first_matrix_multiplier = _mm256_set1_pd(first_matrix_temp);
+					// load the result row to accumulate the multiplication result
+					__m256d prev_result = _mm256_load_pd(result_temp_row + column_second_matrix);
 
-		//			// load the row from the second matrix
-		//			__m256d second_matrix_row = _mm256_load_pd(second_matrix_temp_row + column_second_matrix);
+					// load the row from the second matrix
+					__m256d second_matrix_row = _mm256_load_pd(second_matrix_temp_row + column_second_matrix);
 
-		//			// multiply vectors
-		//			__m256d mult_result = _mm256_mul_pd(first_matrix_multiplier, second_matrix_row);
+					// multiply vectors
+					__m256d mult_result = _mm256_mul_pd(first_matrix_multiplier, second_matrix_row);
 
-		//			// accumulate the result
-		//			__m256d sum_result = _mm256_add_pd(prev_result, mult_result);
+					// accumulate the result
+					__m256d sum_result = _mm256_add_pd(prev_result, mult_result);
 
-		//			// store the result
-		//			_mm256_store_pd(result_temp_row + column_second_matrix, sum_result);
-		//		}
-		//	}
-		//}
+					// store the result
+					_mm256_store_pd(result_temp_row + column_second_matrix, sum_result);
+				}
+			}
+		}
 
 		//_mm256_storeu_pd(resultMatrix[0], _mm256_add_pd(_mm256_loadu_pd(resultMatrix[0]), _mm256_mul_pd(_mm256_set1_pd(firstMatrix[0][0]), _mm256_loadu_pd(secondMatrix[0]))));
-			for (auto i = 0; i < firstMatrixLines; i++)
+			/*for (auto i = 0; i < firstMatrixLines; i++)
 			{
 				for (auto k = 0; k < firstMatrixColumns; k++)
 				{
@@ -62,7 +62,7 @@ private:
 						_mm256_storeu_pd(resultMatrix[i] + j, _mm256_add_pd(_mm256_loadu_pd(resultMatrix[i] + j), _mm256_mul_pd(_mm256_set1_pd(firstMatrix[i][k]), _mm256_loadu_pd(secondMatrix[k] + j))));
 					}
 				}
-			}
+			}*/
 
 	};
 

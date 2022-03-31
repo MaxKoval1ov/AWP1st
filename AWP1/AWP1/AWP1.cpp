@@ -3,7 +3,11 @@
 #include "NotVectorizedQuadMatrixService.h"
 #include "AVXVectorizedQuadMatrixService.h"
 
+#define lines_count 100
+#define columns_count 100
 
+#define incl_lines 1
+#define incl_columns 1
 
 #define GREEN 0x02
 #define RED 0x0C
@@ -24,8 +28,8 @@ int main() {
 	NotVectorizedQuadMatrixService<double> notVectorizedService = NotVectorizedQuadMatrixService<double>();
 	AVXVectorizedQuadMatrixService<double> avxVectorizedService = AVXVectorizedQuadMatrixService<double>();
 
-	QuadMatrix<double> a = QuadMatrix<double>(2, 2, 1, 1);
-	QuadMatrix<double> b = QuadMatrix<double>(2, 2, 1, 1);
+	QuadMatrix<double> a = QuadMatrix<double>(lines_count, columns_count, incl_lines, incl_columns);
+	QuadMatrix<double> b = QuadMatrix<double>(lines_count, columns_count, incl_columns, incl_lines);
 	QuadMatrix<double>* c = new QuadMatrix<double>(a.lines, b.columns, a.includedLines, b.includedColumns);
 	QuadMatrix<double>* d = new QuadMatrix<double>(a.lines, b.columns, a.includedLines, b.includedColumns);
 	a.fillWithRandomNumbers();
