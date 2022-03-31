@@ -18,5 +18,34 @@
     <ClCompile Include="AWP1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NotVectorizedQuadMatrixService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadMatrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoVectorizedQuadMatrixService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AVXVectorizedQuadMatrixService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="NotVectorizedQuadMatrixService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadMatrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoVectorizedQuadMatrixService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AVXVectorizedQuadMatrixService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

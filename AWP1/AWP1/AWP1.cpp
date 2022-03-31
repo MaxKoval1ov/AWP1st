@@ -1,146 +1,79 @@
-﻿
-#include <iostream>
-#include<ctime>
-#include <stdlib.h>
+﻿#include "QuadMatrix.h"
+#include "AutoVectorizedQuadMatrixService.h"
+#include "NotVectorizedQuadMatrixService.h"
+#include "AVXVectorizedQuadMatrixService.h"
 
-using namespace std;
-double generateRandomDouble(double min,double max)
+
+
+#define GREEN 0x02
+#define RED 0x0C
+#define WHITE 0x07
+#define YELLOW 0x06
+
+void changeConsoleColor(int color)
 {
-    return (double)rand() / (double)RAND_MAX * (max - min) + min;
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | color));
 }
 
-double ****generate4Darr(double ****initArr,int row1,int col1, int row3, int col3)
-{
-    srand(time(0));
-
-    for (int i = 0; i < row1; i++)
-    {
-        initArr[i] = new double** [col1];
-        for (int j = 0; j < col1; j++)
-        {
-            initArr[i][j] = new double* [row3];
-            for (int l = 0; l < row3; l++)
-            {
-                initArr[i][j][l] = new double[col3];
-                for (int m = 0; m < col3; m++)
-                {
-                    initArr[i][j][l][m] = generateRandomDouble(0, 100);
-                }
-            }
-        }
-    }
-    return initArr;
-}
-
-void print4Darr(double**** initArr, int row1, int col1, int row3, int col3)
-{
-    for (int i = 0; i < row1; i++)
-    {
-        for (int j = 0; j < col1; j++)
-        {
-            for (int l = 0; l < row3; l++)
-            {
-                for (int m = 0; m < col3; m++)
-                {
-                    cout << initArr[i][j][l][m] << "||";
-                }
-                cout << endl;
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
-
-void multiply2DArr(double** arr1, double** arr2, double** res,int row1,int col1, int col2)
-{
-    for (int i = 0; i < row1; i++)
-    {
-       
-        for (int j = 0; j < col2; j++)
-        {
-            res[i][j] = 0;
-            for (int k = 0; k < col1; k++)
-                res[i][j] += arr1[i][k] * arr2[k][j];
-        }
-    }
-}
-
-void multiply4DArr(double**** arr1, double**** arr2, double**** res, int row1, int col1, int col2, int row3, int col3 , int col4)
-{
-    for (int i = 0; i < row3; i++)
-    {
-
-        for (int j = 0; j < col4; j++)
-        {
-            for (int k = 0; k < col3; k++)
-                multiply2DArr(arr1[i][k], arr2[k][j], res[i][j], row1, col1, col2);
-        }
-    }
-}
-
-
-
-int main()
-{
+int main() {
 	srand(time(0));
-    int row1, row2, col1, col2, row3, col3, row4, col4;
-    double ****outer1;
-    double ****outer2;
-    double ****result;
-	system("chcp 1251");
-    system("cls");
-    cout << "1st row: ";
-    cin >> row1;
-    cout << "1st col: ";
-    cin >> col1;
-    cout << "2nd row: ";
-    cin >> row2;
-    cout << "2nd col: ";
-    cin >> col2;
+	changeConsoleColor(WHITE);
+	using namespace std::chrono;
+	AutoVectorizedQuadMatrixService<double> autoVectorizedService = AutoVectorizedQuadMatrixService<double>();
+	NotVectorizedQuadMatrixService<double> notVectorizedService = NotVectorizedQuadMatrixService<double>();
+	AVXVectorizedQuadMatrixService<double> avxVectorizedService = AVXVectorizedQuadMatrixService<double>();
 
-    cout << "3d row: ";
-    cin >> row3;
-    cout << "3d col: ";
-    cin >> col3;
-    cout << "4th row: ";
-    cin >> row4;
-    cout << "4th col: ";
-    cin >> col4;
+	QuadMatrix<double> a = QuadMatrix<double>(2, 2, 1, 1);
+	QuadMatrix<double> b = QuadMatrix<double>(2, 2, 1, 1);
+	QuadMatrix<double>* c = new QuadMatrix<double>(a.lines, b.columns, a.includedLines, b.includedColumns);
+	QuadMatrix<double>* d = new QuadMatrix<double>(a.lines, b.columns, a.includedLines, b.includedColumns);
+	a.fillWithRandomNumbers();
+	b.fillWithRandomNumbers();	
 
-    if (col1 != row2 || col3!= row4)
-    {
-        cout << "Умножение невозможно!";
-        cin.get(); cin.get();
-        return 0;
-    }
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+	c = notVectorizedService.multiplyMatrices(a, b);
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+	std::cout << "Without vectorization: ";
+	changeConsoleColor(RED);
+	std::cout << time_span.count() << " seconds.";
+	std::cout << std::endl;
 
-    outer1 = new double*** [row1];
-    outer2 = new double*** [row2];
-    result = new double*** [row2];
+	changeConsoleColor(WHITE);
+	high_resolution_clock::time_point t3 = high_resolution_clock::now();
+	c = autoVectorizedService.multiplyMatrices(a, b);
+	high_resolution_clock::time_point t4 = high_resolution_clock::now();
+	duration<double> time_span2 = duration_cast<duration<double>>(t4 - t3);
+	std::cout << "Auto vectorization: ";
+	changeConsoleColor(YELLOW);
+	std::cout << time_span2.count() << " seconds.";
+	std::cout << std::endl;
+	//c->printToConsole();
 
-    generate4Darr(outer1, row1, col1, row3, col3);
-	generate4Darr(outer2, row2, col2, row4, col4);
-    generate4Darr(result, row2, col1, row4, col3);
+	changeConsoleColor(WHITE);
+	high_resolution_clock::time_point t5 = high_resolution_clock::now();
+	d = avxVectorizedService.multiplyMatrices(a, b);
+	high_resolution_clock::time_point t6 = high_resolution_clock::now();
+	duration<double> time_span3 = duration_cast<duration<double>>(t6 - t5);
+	std::cout << "SSE vectorization: ";
+	changeConsoleColor(GREEN);
+	std::cout << time_span3.count() << " seconds.";
+	std::cout << std::endl << std::endl;
+
+	
+	/*std::cout << std::endl;
+	d->printToConsole();*/
 
 
-    multiply4DArr(outer1, outer2, result, row1, col1, col2, row3, col3, col4);
-   /* for (int i = 0; i < row1; i++)
-    {
-        for (int j = 0; j < col1; j++)
-        {
-            for (int l = 0; l < row3; l++)
-            {
-                for (int m = 0; m < col3; m++)
-                {
+	if (c->equals(d) != true) {
+		changeConsoleColor(RED);
+		std::cout << "Matrices are not the same :(" << std::endl;
+	} else {
+		changeConsoleColor(GREEN);
+		std::cout << "Matrices are the same :)" << std::endl;
+	}
+	changeConsoleColor(WHITE);
 
-                }
-            }
-        }
-    }*/
-
-    print4Darr(result, row2, col1, row4, col3);
-    cin.get(); cin.get();
-    return 0;
+	return 0;
 }
-

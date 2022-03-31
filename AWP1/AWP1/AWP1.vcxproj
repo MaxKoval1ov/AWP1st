@@ -116,6 +116,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Qvec-report:2 /Qpar-report:2 %(AdditionalOptions)</AdditionalOptions>
+      <EnableParallelCodeGeneration>Yes</EnableParallelCodeGeneration>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,6 +132,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <EnableParallelCodeGeneration>Yes</EnableParallelCodeGeneration>
+      <AdditionalOptions>/Qvec-report:2 /Qpar-report:1 %(AdditionalOptions)</AdditionalOptions>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,7 +144,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AutoVectorizedQuadMatrixService.cpp" />
+    <ClCompile Include="AVXVectorizedQuadMatrixService.cpp" />
     <ClCompile Include="AWP1.cpp" />
+    <ClCompile Include="NotVectorizedQuadMatrixService.cpp" />
+    <ClCompile Include="QuadMatrix.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AutoVectorizedQuadMatrixService.h" />
+    <ClInclude Include="AVXVectorizedQuadMatrixService.h" />
+    <ClInclude Include="libraries.h" />
+    <ClInclude Include="NotVectorizedQuadMatrixService.h" />
+    <ClInclude Include="QuadMatrix.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
